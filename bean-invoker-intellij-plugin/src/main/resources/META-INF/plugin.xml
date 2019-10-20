@@ -1,0 +1,39 @@
+<idea-plugin>
+    <id>io.github.newhoo.bean-invoker</id>
+    <name>Bean Invoker</name>
+    <vendor email="huzunrong@gmail.com" url="https://github.com/newhoo/bean-invoker">Bean Invoker</vendor>
+
+    <description><![CDATA[
+    <p>快速调用Spring bean方法</p>
+    <br/>
+    <p>Invoke spring bean method conveniently</p>
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    -->
+    <depends>com.intellij.modules.java</depends>
+
+    <idea-version since-build="181.0"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <projectConfigurable instance="io.github.newhoo.invoker.setting.SettingConfigurable"/>
+
+        <intentionAction>
+            <className>io.github.newhoo.invoker.InvokeMethodCreateIntention</className>
+            <category>Java:Other</category>
+        </intentionAction>
+        <java.programPatcher implementation="io.github.newhoo.invoker.BeanInvokerPreRunCheck"/>
+    </extensions>
+
+    <actions>
+        <!-- #e16531 -->
+        <action id="io.github.newhoo.invoker.InvokeBeanAction"
+                class="io.github.newhoo.invoker.InvokeBeanAction" text="快速调用" icon="/img/run.png">
+            <keyboard-shortcut first-keystroke="alt x" keymap="$default"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+    </actions>
+</idea-plugin>
