@@ -3,7 +3,6 @@ package io.github.newhoo.invoker;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.lang.instrument.ClassFileTransformer;
@@ -16,7 +15,6 @@ import java.security.ProtectionDomain;
  * @author huzunrong
  * @since 1.0
  */
-@Slf4j
 public class BeanInvokerTransformer implements ClassFileTransformer {
     private static final String ABSTRACT_APPLICATION_CONTEXT = "org/springframework/context/support/AbstractApplicationContext";
 
@@ -27,7 +25,7 @@ public class BeanInvokerTransformer implements ClassFileTransformer {
             return classfileBuffer;
         }
 
-        log.info("Bean invoker agent starting...");
+        System.out.println("Bean invoker agent starting...");
 
         CtClass cl = null;
         try {
@@ -51,7 +49,7 @@ public class BeanInvokerTransformer implements ClassFileTransformer {
 
             return cl.toBytecode();
         } catch (Exception e) {
-            log.error("Bean invoker agent error: {}", e.toString(), e);
+            System.err.println("Bean invoker agent error: " + e.toString());
             e.printStackTrace();
         } finally {
             if (cl != null) {

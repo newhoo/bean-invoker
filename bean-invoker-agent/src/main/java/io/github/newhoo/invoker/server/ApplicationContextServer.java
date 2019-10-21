@@ -1,8 +1,6 @@
 package io.github.newhoo.invoker.server;
 
 import io.github.newhoo.invoker.common.Config;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 
 import java.io.BufferedReader;
@@ -13,7 +11,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.UUID;
 
 /**
  * Spring容器服务器
@@ -22,7 +19,6 @@ import java.util.UUID;
  *
  * @author zunrong
  */
-@Slf4j
 public final class ApplicationContextServer {
 
     private static volatile boolean working = false;
@@ -43,7 +39,7 @@ public final class ApplicationContextServer {
 
     private static void doStartServer() {
         int port = Config.beanInvokePort;
-        log.info("Bean invoker initialized with port: {}", port);
+        System.out.println("Bean invoker initialized with port: " + port);
         if (!working) {
             working = true;
             new Thread(() -> {
@@ -60,7 +56,6 @@ public final class ApplicationContextServer {
                             continue;
                         }
 
-                        MDC.put("traceId", UUID.randomUUID().toString());
                         try {
                             String[] split = content.split("::");
                             String className = split[0];
@@ -68,19 +63,23 @@ public final class ApplicationContextServer {
 
                             handleRequest(className, methodName);
                         } catch (InvocationTargetException e) {
-                            log.error("Invoke method error: {}", e.toString(), e);
+                            System.err.println("Invoke method error: " + e.toString());
+                            e.printStackTrace();
                         } catch (ClassNotFoundException | NoSuchMethodException e) {
-                            log.error("Invoke method not found: {}", e.toString(), e);
+                            System.err.println("Invoke method not found: " + e.toString());
+                            e.printStackTrace();
                         } catch (Exception e) {
-                            log.error("unknown exception: {}", e.toString(), e);
+                            System.err.println("unknown exception: " + e.toString());
+                            e.printStackTrace();
                         }
 
                         socket.close();
                     }
                 } catch (IOException e) {
-                    log.error("Bean invoker initialized with exception: {}", e.toString(), e);
+                    System.err.println("Bean invoker initialized with exception: " + e.toString());
+                    e.printStackTrace();
                 } finally {
-                    log.info("Bean invoker stop...");
+                    System.out.println("Bean invoker stop...");
                     if (serverSocket != null) {
                         try {
                             serverSocket.close();
@@ -100,13 +99,14 @@ public final class ApplicationContextServer {
      */
     private static void handleRequest(String className, String methodName) throws ClassNotFoundException, NoSuchMethodException,
                                                                                   InvocationTargetException, IllegalAccessException {
-        log.info("###################################### {}#{} ######################################", className, methodName);
+        System.out.println(String.format("###################################### %s#%s ######################################", className,
+                methodName));
 
         Class<?> targetClass = Class.forName(className);
         Method targetMethod = targetClass.getDeclaredMethod(methodName);
 
         if (!Modifier.isPublic(targetMethod.getModifiers())) {
-            log.warn("Invoke method must be public with no param.");
+            System.out.println("Invoke method must be public with no param.");
             return;
         }
 
@@ -117,7 +117,7 @@ public final class ApplicationContextServer {
         }
         Object result = targetMethod.invoke(invokeObj);
         if (result != null) {
-            log.info("Result: {}", result);
+            System.out.println("Result: " + result);
         }
     }
 }
