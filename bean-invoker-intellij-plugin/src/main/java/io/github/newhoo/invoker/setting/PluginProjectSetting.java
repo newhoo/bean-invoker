@@ -29,7 +29,7 @@ public class PluginProjectSetting {
     }
 
     public void setEnableQuickInvoke(boolean enableQuickInvoke) {
-        propertiesComponent.setValue(KEY_SPRING_INVOKE_ENABLE, enableQuickInvoke, Boolean.TRUE);
+        propertiesComponent.setValue(KEY_SPRING_INVOKE_ENABLE, enableQuickInvoke);
     }
 
     public int getSpringInvokePort() {
