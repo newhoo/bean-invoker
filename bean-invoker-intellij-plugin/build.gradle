@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'io.github.newhoo.invoker'
-version '1.0.0'
+version '1.0.1'
 
 sourceCompatibility = 1.8
 
@@ -24,6 +24,7 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-    <p>new plugin, just use it.</p>
+    <p>default not enabled.</p>
+    <p>默认不启用.</p>
     """
 }

@@ -25,7 +25,7 @@ public class PluginProjectSetting {
     // spring
 
     public boolean getEnableQuickInvoke() {
-        return propertiesComponent.getBoolean(KEY_SPRING_INVOKE_ENABLE, Boolean.TRUE);
+        return propertiesComponent.getBoolean(KEY_SPRING_INVOKE_ENABLE, Boolean.FALSE);
     }
 
     public void setEnableQuickInvoke(boolean enableQuickInvoke) {
