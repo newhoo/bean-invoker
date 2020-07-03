@@ -1,7 +1,6 @@
 package io.github.newhoo.invoker.server;
 
 import io.github.newhoo.invoker.common.Config;
-import org.springframework.context.ApplicationContext;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,18 +21,23 @@ import java.net.Socket;
 public final class ApplicationContextServer {
 
     private static volatile boolean working = false;
-    private static ApplicationContext ctx;
+    private static Object ctx;
 
     /**
      * 启动bean上下文服务器
      */
-    public static void startServer(ApplicationContext applicationContext) {
-        if (ctx == null || applicationContext.getParent() == ctx) {
-            ctx = applicationContext;
+    public static void startServer(Object applicationContext) {
+        try {
+            Method getParent = applicationContext.getClass().getMethod("getParent");
+            if (ctx == null || getParent.invoke(applicationContext) == ctx) {
+                ctx = applicationContext;
 
-            if (!working) {
-                doStartServer();
+                if (!working) {
+                    doStartServer();
+                }
             }
+        } catch (Exception e) {
+            System.err.println("Bean invoker initialized with exception: " + e.toString());
         }
     }
 
@@ -75,7 +79,7 @@ public final class ApplicationContextServer {
 
                         socket.close();
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     System.err.println("Bean invoker initialized with exception: " + e.toString());
                     e.printStackTrace();
                 } finally {
@@ -102,7 +106,7 @@ public final class ApplicationContextServer {
         System.out.println(String.format("###################################### %s#%s ######################################", className,
                 methodName));
 
-        Class<?> targetClass = Class.forName(className);
+        Class<?> targetClass = Thread.currentThread().getContextClassLoader().loadClass(className);
         Method targetMethod = targetClass.getDeclaredMethod(methodName);
 
         if (!Modifier.isPublic(targetMethod.getModifiers())) {
@@ -113,7 +117,8 @@ public final class ApplicationContextServer {
         Object invokeObj = null;
         // 非static方法
         if (!Modifier.isStatic(targetMethod.getModifiers())) {
-            invokeObj = ctx.getBean(targetClass);
+            Method BeanFactory_getBean = ctx.getClass().getMethod("getBean", Class.class);
+            invokeObj = BeanFactory_getBean.invoke(ctx, targetClass);
         }
         Object result = targetMethod.invoke(invokeObj);
         if (result != null) {

@@ -29,16 +29,16 @@ import static java.util.stream.Collectors.toSet;
 public class BeanInvokerPreRunCheck extends JavaProgramPatcher {
 
     private static final Logger logger = Logger.getInstance(AppConstant.APP_ID);
-    private static final Set<String> SUPPORTED_RUN_CONFIGURATION = Stream.of(
-            "com.intellij.execution.application.ApplicationConfiguration",
-            "com.intellij.spring.boot.run.SpringBootApplicationRunConfiguration"
-    ).collect(toSet());
+//    private static final Set<String> SUPPORTED_RUN_CONFIGURATION = Stream.of(
+//            "com.intellij.execution.application.ApplicationConfiguration",
+//            "com.intellij.spring.boot.run.SpringBootApplicationRunConfiguration"
+//    ).collect(toSet());
 
     @Override
     public void patchJavaParameters(Executor executor, RunProfile configuration, JavaParameters javaParameters) {
-        if (!SUPPORTED_RUN_CONFIGURATION.contains(configuration.getClass().getName())) {
-            return;
-        }
+//        if (!SUPPORTED_RUN_CONFIGURATION.contains(configuration.getClass().getName())) {
+//            return;
+//        }
 
         if (configuration instanceof RunConfiguration) {
             RunConfiguration runConfiguration = (RunConfiguration) configuration;

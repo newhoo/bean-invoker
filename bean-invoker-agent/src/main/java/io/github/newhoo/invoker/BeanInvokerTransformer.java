@@ -1,10 +1,12 @@
 package io.github.newhoo.invoker;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
+import jdk.internal.org.objectweb.asm.ClassReader;
+import jdk.internal.org.objectweb.asm.ClassVisitor;
+import jdk.internal.org.objectweb.asm.ClassWriter;
+import jdk.internal.org.objectweb.asm.MethodVisitor;
+import jdk.internal.org.objectweb.asm.Opcodes;
+import jdk.internal.org.objectweb.asm.commons.AdviceAdapter;
 
-import java.io.ByteArrayInputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
@@ -27,35 +29,35 @@ public class BeanInvokerTransformer implements ClassFileTransformer {
 
         System.out.println("Bean invoker agent starting...");
 
-        CtClass cl = null;
-        try {
-            ClassPool pool = ClassPool.getDefault();
-            cl = pool.makeClass(new ByteArrayInputStream(classfileBuffer));
+        return asmVisit(classfileBuffer);
+    }
 
-            pool.importPackage("java.util");
-            pool.importPackage("org.springframework.beans.factory.config");
-            pool.importPackage("io.github.newhoo.invoker.server");
+    private byte[] asmVisit(byte[] classfileBuffer) {
+        ClassReader cr = new ClassReader(classfileBuffer);
+        ClassWriter cw = new ClassWriter(cr, 0);
+        ClassVisitor cv = new ClassVisitor(Opcodes.ASM5, cw) {
+            @Override
+            public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
+                if (!"finishRefresh".equals(name)) {
+                    return mv;
+                }
+                System.out.println("visit method: " + name + "  ===  " + descriptor + "  ===  " + signature + "  ===  " + exceptions);
 
-            CtMethod m = cl.getDeclaredMethod("finishRefresh");
+                return new AdviceAdapter(Opcodes.ASM5, mv, access, name, descriptor) {
 
-            m.insertAfter(
-                    "System.err.println(\"spring id: \" + this.getId());\n" +
-                            "System.err.println(\"spring applicationName: \" + this.getApplicationName());\n" +
-                            "System.err.println(\"spring context: \" + this);\n" +
-                            "System.err.println(\"spring beanDefinitionNames: \" + this.getBeanDefinitionNames().length + \" \" + Arrays.asList(this.getBeanDefinitionNames()));" +
-                            "\n" +
-                            "ApplicationContextServer.startServer(this);"
-            );
+                    @Override
+                    protected void onMethodExit(int opcode) {
+                        super.onMethodExit(opcode);
 
-            return cl.toBytecode();
-        } catch (Exception e) {
-            System.err.println("Bean invoker agent error: " + e.toString());
-            e.printStackTrace();
-        } finally {
-            if (cl != null) {
-                cl.detach();// ClassPool默认不会回收，需要手动清理
+                        mv.visitVarInsn(Opcodes.ALOAD, 0);
+                        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "io/github/newhoo/invoker/server/ApplicationContextServer", "startServer", "(Ljava/lang/Object;)V", false);
+                    }
+                };
             }
-        }
-        return classfileBuffer;
+        };
+
+        cr.accept(cv, 0);
+        return cw.toByteArray();
     }
 }

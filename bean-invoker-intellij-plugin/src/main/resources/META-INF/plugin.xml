@@ -1,12 +1,12 @@
 <idea-plugin>
     <id>io.github.newhoo.bean-invoker</id>
     <name>Bean Invoker</name>
-    <vendor email="huzunrong@gmail.com" url="https://github.com/newhoo/bean-invoker">Bean Invoker</vendor>
+    <vendor email="huzunrong@foxmail.com" url="https://github.com/huzunrong/bean-invoker">Bean Invoker</vendor>
 
     <description><![CDATA[
-    <p>快速调用Spring bean方法</p>
+    <li>Invoke spring bean method conveniently</li>
     <br/>
-    <p>Invoke spring bean method conveniently</p>
+    <li>快速调用Spring bean方法</li>
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
