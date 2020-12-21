@@ -6,29 +6,27 @@
 
     <groupId>io.github.newhoo.invoker</groupId>
     <artifactId>bean-invoker-agent</artifactId>
-    <version>1.0</version>
+    <version>1.0.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.javassist</groupId>-->
-<!--            <artifactId>javassist</artifactId>-->
-<!--            <version>3.25.0-GA</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-context</artifactId>-->
-<!--            <version>4.3.0.RELEASE</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.27.0-GA</version>
+        </dependency>
+        <!-- <dependency>
+             <groupId>org.springframework</groupId>
+             <artifactId>spring-context</artifactId>
+             <version>4.3.0.RELEASE</version>
+             <scope>provided</scope>
+         </dependency>-->
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -38,14 +36,15 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>utf-8</encoding>
+                    <compilerArgument>-parameters</compilerArgument>
                     <compilerArguments>
                         <verbose/>
                         <!-- 将jdk的依赖jar打入项目中，这样项目中使用的jdk的依赖就尅正常使用 -->
-                        <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
+                        <!-- <bootclasspath>${java.home}/lib/rt.jar</bootclasspath> -->
                     </compilerArguments>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.0.0</version>
@@ -59,7 +58,7 @@
                             <addClasspath>true</addClasspath>
                         </manifest>
                         <manifestEntries>
-                            <!-- <Agent-Class>com.ex.javassist.agent1.TestAgent</Agent-Class> -->
+                            &lt;!&ndash; <Agent-Class>com.ex.javassist.agent1.TestAgent</Agent-Class> &ndash;&gt;
                             <Premain-Class>io.github.newhoo.invoker.BeanInvokerInstrumentation</Premain-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
@@ -73,6 +72,41 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- <minimizeJar>true</minimizeJar> -->
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>with-dependencies</shadedClassifierName>
+                            <relocations>
+                                <relocation>
+                                    <pattern>javassist</pattern>
+                                    <shadedPattern>internal.javassist</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <!-- <Agent-Class>com.ex.javassist.agent1.TestAgent</Agent-Class> -->
+                                        <Premain-Class>io.github.newhoo.invoker.BeanInvokerInstrumentation</Premain-Class>
+                                        <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                                        <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

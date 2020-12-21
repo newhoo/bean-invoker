@@ -11,12 +11,14 @@ import java.lang.reflect.Modifier;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static io.github.newhoo.invoker.common.Constant.SERVICE_METHOD_SPLIT;
+
 /**
  * Spring容器服务器
  * <p>
  * 支持单个Spring容器，目前常用
  *
- * @author zunrong
+ * @author huzunrong
  */
 public final class ApplicationContextServer {
 
@@ -55,13 +57,14 @@ public final class ApplicationContextServer {
                         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         String content = br.readLine();
 
-                        if (content == null || content.length() == 0) {
+                        if (content == null || content.length() == 0 || !content.contains(SERVICE_METHOD_SPLIT)) {
+                            System.err.println("Please use bean invoker client to call bean service: " + content);
                             socket.close();
                             continue;
                         }
 
                         try {
-                            String[] split = content.split("::");
+                            String[] split = content.split(SERVICE_METHOD_SPLIT);
                             String className = split[0];
                             String methodName = split[1];
 
@@ -102,7 +105,7 @@ public final class ApplicationContextServer {
      * @param methodName sayHello
      */
     private static void handleRequest(String className, String methodName) throws ClassNotFoundException, NoSuchMethodException,
-                                                                                  InvocationTargetException, IllegalAccessException {
+            InvocationTargetException, IllegalAccessException {
         System.out.println(String.format("###################################### %s#%s ######################################", className,
                 methodName));
 

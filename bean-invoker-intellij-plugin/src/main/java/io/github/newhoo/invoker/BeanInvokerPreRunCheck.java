@@ -15,20 +15,18 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Set;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toSet;
+import static io.github.newhoo.invoker.common.Constant.APP_ID;
 
 /**
  * BeanInvokerPreRunCheck
  *
  * @author huzunrong
- * @since 1.0
+ * @since 1.0.1
  */
 public class BeanInvokerPreRunCheck extends JavaProgramPatcher {
 
-    private static final Logger logger = Logger.getInstance(AppConstant.APP_ID);
+    private static final Logger logger = Logger.getInstance(APP_ID);
 //    private static final Set<String> SUPPORTED_RUN_CONFIGURATION = Stream.of(
 //            "com.intellij.execution.application.ApplicationConfiguration",
 //            "com.intellij.spring.boot.run.SpringBootApplicationRunConfiguration"
@@ -45,7 +43,7 @@ public class BeanInvokerPreRunCheck extends JavaProgramPatcher {
             Project project = runConfiguration.getProject();
             PluginProjectSetting pluginProjectSetting = new PluginProjectSetting(project);
 
-            logger.info(String.format("检查[%s]插件启用状态", AppConstant.APP_ID));
+            logger.info(String.format("检查[%s]插件启用状态", APP_ID));
 
             if (pluginProjectSetting.getEnableQuickInvoke() && AppUtils.isSpringApp(project)) {
                 ParametersList vmParametersList = javaParameters.getVMParametersList();

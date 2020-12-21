@@ -7,7 +7,7 @@ import static io.github.newhoo.invoker.common.Constant.PROPERTIES_KEY_INVOKE_POR
  * Config
  *
  * @author huzunrong
- * @since 1.0
+ * @since 1.0.1
  */
 public final class Config {
 

@@ -12,6 +12,15 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        1.0.2
+        <ul>
+            <li>supported spring app with kotlin</li>
+            <li>supported i18n</li>
+            <br/>
+            <li>支持用kotlin编写的Spring应用</li>
+            <li>支持国际化</li>
+        </ul>
+
         1.0.1
         <ul>
             <li>remove javassist, use ASM from jdk internal</li>

@@ -8,7 +8,7 @@ import java.lang.instrument.Instrumentation;
  * BeanInvokerInstrumentation
  *
  * @author huzunrong
- * @since 1.0
+ * @since 1.0.1
  */
 public class BeanInvokerInstrumentation {
 
@@ -18,7 +18,7 @@ public class BeanInvokerInstrumentation {
     public static void premain(String args, Instrumentation inst) {
         // print configuration
         Config.init();
-        System.out.println("Bean invoker port: " + Config.beanInvokePort);
+        System.out.println("Bean invoker random port: " + Config.beanInvokePort);
 
         // Instrumentation提供的addTransformer方法，在类加载时会回调ClassFileTransformer接口
         inst.addTransformer(new BeanInvokerTransformer());
