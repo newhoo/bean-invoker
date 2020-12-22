@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'io.github.newhoo.invoker'
-version '1.0.1'
+version '1.0.2'
 
 sourceCompatibility = 1.8
 
@@ -17,9 +17,9 @@ dependencies {
 }
 
 intellij {
-    version '2018.1.7'
+//    version '2018.1.7'
 //    version '2019.3'
-//    localPath '/Applications/IntelliJ IDEA.app/Contents'
+    localPath '/Applications/IntelliJ IDEA.app/Contents'
     updateSinceUntilBuild false
     sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
     plugins = ['java']
