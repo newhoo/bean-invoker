@@ -13,9 +13,6 @@ import io.github.newhoo.invoker.setting.PluginProjectSetting;
 import io.github.newhoo.invoker.util.AppUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.net.URL;
-import java.net.URLDecoder;
-
 import static io.github.newhoo.invoker.common.Constant.APP_ID;
 
 /**
@@ -45,38 +42,19 @@ public class BeanInvokerPreRunCheck extends JavaProgramPatcher {
 
             logger.info(String.format("检查[%s]插件启用状态", APP_ID));
 
-            if (pluginProjectSetting.getEnableQuickInvoke() && AppUtils.isSpringApp(project)) {
+            if (pluginProjectSetting.getEnableQuickInvoke() && pluginProjectSetting.isSpringApp()) {
                 ParametersList vmParametersList = javaParameters.getVMParametersList();
 
-                String agentPath = getAgentPath();
-                if (StringUtils.contains(agentPath, " ")) {
-                    agentPath = "\"" + agentPath + "\"";
-                }
-                vmParametersList.addParametersString("-javaagent:" + agentPath);
+                String agentPath = pluginProjectSetting.getAgentPath();
+                if (StringUtils.isNotEmpty(agentPath)) {
+                    if (StringUtils.contains(agentPath, " ")) {
+                        agentPath = "\"" + agentPath + "\"";
+                    }
+                    vmParametersList.addParametersString("-javaagent:" + agentPath);
 
-                vmParametersList.addNotEmptyProperty(Constant.PROPERTIES_KEY_INVOKE_PORT,
-                        String.valueOf(AppUtils.findAvailablePort(project)));
+                    vmParametersList.addNotEmptyProperty(Constant.PROPERTIES_KEY_INVOKE_PORT, String.valueOf(AppUtils.findAvailablePort(project)));
+                }
             }
         }
-    }
-
-    /**
-     * -javaagent:/path/your/bean-invoker-agent.jar
-     */
-    private static String getAgentPath() {
-        URL resource = io.github.newhoo.invoker.common.Constant.class.getResource("");
-        if (resource != null && "jar".equals(resource.getProtocol())) {
-            String path = resource.getPath();
-            try {
-                String decodePath = URLDecoder.decode(path.substring("file:/".length() - 1, path.indexOf("!/")), "UTF-8");
-                if (decodePath.contains(":")) {
-                    decodePath = decodePath.substring(1);
-                }
-                return decodePath;
-            } catch (Exception e) {
-                logger.error("URLDecoder Exception: " + resource.getPath(), e);
-            }
-        }
-        return "";
     }
 }

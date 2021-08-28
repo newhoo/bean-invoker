@@ -9,6 +9,7 @@ import com.intellij.psi.PsiClassOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.util.IncorrectOperationException;
+import io.github.newhoo.invoker.setting.PluginProjectSetting;
 import io.github.newhoo.invoker.util.AppUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nls.Capitalization;
@@ -38,7 +39,7 @@ public class InvokeMethodCreateIntention extends PsiElementBaseIntentionAction i
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-        if (!AppUtils.isSpringApp(project)) {
+        if (!new PluginProjectSetting(project).isSpringApp()) {
             return false;
         }
         if (element.getContainingFile().isWritable() && element.getContainingFile() instanceof PsiClassOwner) {

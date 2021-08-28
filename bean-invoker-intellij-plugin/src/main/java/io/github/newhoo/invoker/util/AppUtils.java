@@ -1,5 +1,7 @@
 package io.github.newhoo.invoker.util;
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -8,6 +10,7 @@ import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -23,11 +26,15 @@ import io.github.newhoo.invoker.setting.SettingConfigurable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.event.HyperlinkEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.EDITOR;
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
@@ -70,6 +77,25 @@ public final class AppUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * -javaagent:/path/your/bean-invoker-agent.jar
+     */
+    public static Optional<String> getAgentPath(String pluginId, String agentName) {
+        PluginId pluginId0 = PluginId.getId(pluginId);
+        IdeaPluginDescriptor plugin = PluginManager.getPlugin(pluginId0);
+        if (plugin != null) {
+//            Path pluginPath = plugin.getPluginPath();
+            File path = plugin.getPath();
+            return Arrays.stream(Objects.requireNonNull(path.listFiles()))
+                         .filter(File::isDirectory)
+                         .flatMap(file -> Arrays.stream(Objects.requireNonNull(file.listFiles(f -> f.getName().endsWith(".jar")))))
+                         .filter(file -> file.getName().contains(agentName))
+                         .map(File::getAbsolutePath)
+                         .findFirst();
+        }
+        return Optional.empty();
     }
 
     public static PsiMethod getPositionMethod(AnActionEvent anActionEvent) {

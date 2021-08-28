@@ -13,6 +13,8 @@ import static io.github.newhoo.invoker.common.Constant.DEFAULT_INVOKE_PORT;
  */
 public class PluginProjectSetting {
 
+    private static final String KEY_IS_SPRING_APP = "bean-invoker.isSpringApp";
+    private static final String KEY_AGENT_PATH = "bean-invoker.agentPath";
     private static final String KEY_SPRING_INVOKE_ENABLE = "bean-invoker.enableQuickInvoke";
     private static final String KEY_INVOKE_PORT = "bean-invoker.invokePort";
 
@@ -22,7 +24,21 @@ public class PluginProjectSetting {
         this.propertiesComponent = PropertiesComponent.getInstance(project);
     }
 
-    // spring
+    public boolean isSpringApp() {
+        return propertiesComponent.getBoolean(KEY_IS_SPRING_APP, Boolean.FALSE);
+    }
+
+    public void setIsSpringApp(boolean isSpringApp) {
+        propertiesComponent.setValue(KEY_IS_SPRING_APP, isSpringApp);
+    }
+
+    public String getAgentPath() {
+        return propertiesComponent.getValue(KEY_AGENT_PATH);
+    }
+
+    public void setAgentPath(String agentPath) {
+        propertiesComponent.setValue(KEY_AGENT_PATH, agentPath);
+    }
 
     public boolean getEnableQuickInvoke() {
         return propertiesComponent.getBoolean(KEY_SPRING_INVOKE_ENABLE, Boolean.FALSE);

@@ -12,6 +12,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        1.0.3
+        <ul>
+            <li>fix bugs</li>
+        </ul>
+
         1.0.2
         <ul>
             <li>supported spring app with kotlin</li>
@@ -47,6 +52,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <postStartupActivity implementation="io.github.newhoo.invoker.MyStartupActivity"/>
         <projectConfigurable instance="io.github.newhoo.invoker.setting.SettingConfigurable"/>
 
         <intentionAction>

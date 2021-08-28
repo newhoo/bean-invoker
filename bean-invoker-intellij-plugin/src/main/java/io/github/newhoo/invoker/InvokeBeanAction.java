@@ -43,7 +43,7 @@ public class InvokeBeanAction extends AnAction {
         }
 
         PsiMethod positionMethod = AppUtils.getPositionMethod(e);
-        e.getPresentation().setEnabledAndVisible(positionMethod != null && positionMethod.getReturnType() != null && AppUtils.isSpringApp(project));
+        e.getPresentation().setEnabledAndVisible(positionMethod != null && positionMethod.getReturnType() != null && new PluginProjectSetting(project).isSpringApp());
     }
 
     @Override
