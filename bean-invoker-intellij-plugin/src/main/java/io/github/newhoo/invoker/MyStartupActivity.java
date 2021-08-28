@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
+import com.intellij.util.concurrency.AppExecutorUtil;
 import io.github.newhoo.invoker.setting.PluginProjectSetting;
 import io.github.newhoo.invoker.util.AppUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,13 +26,17 @@ public class MyStartupActivity implements StartupActivity {
                 PluginProjectSetting setting = new PluginProjectSetting(project);
 
                 ApplicationManager.getApplication().runReadAction(() -> {
-                    setting.setIsSpringApp(AppUtils.isSpringApp(project));
+                    boolean springApp = AppUtils.isSpringApp(project);
+                    setting.setIsSpringApp(springApp);
+
+                    if (springApp && StringUtils.isEmpty(setting.getAgentPath())) {
+                        AppExecutorUtil.getAppExecutorService().execute(() -> {
+                            AppUtils.getAgentPath("io.github.newhoo.bean-invoker", "bean-invoker-agent")
+                                    .ifPresent(setting::setAgentPath);
+                        });
+                    }
                 });
 
-                if (StringUtils.isEmpty(setting.getAgentPath())) {
-                    AppUtils.getAgentPath("io.github.newhoo.bean-invoker", "bean-invoker-agent")
-                            .ifPresent(setting::setAgentPath);
-                }
             }
         });
     }

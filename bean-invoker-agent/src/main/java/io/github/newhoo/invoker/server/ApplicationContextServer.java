@@ -57,7 +57,11 @@ public final class ApplicationContextServer {
                         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         String content = br.readLine();
 
-                        if (content == null || content.length() == 0 || !content.contains(SERVICE_METHOD_SPLIT)) {
+                        if (content == null || content.length() == 0) {
+                            socket.close();
+                            continue;
+                        }
+                        if (!content.contains(SERVICE_METHOD_SPLIT)) {
                             System.err.println("Please use bean invoker client to call bean service: " + content);
                             socket.close();
                             continue;
