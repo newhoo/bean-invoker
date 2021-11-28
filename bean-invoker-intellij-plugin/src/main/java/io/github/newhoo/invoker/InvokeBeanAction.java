@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
 import io.github.newhoo.invoker.i18n.InvokerBundle;
@@ -36,28 +36,32 @@ public class InvokeBeanAction extends AnAction {
     @Override
     public void update(AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
-        PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
-        if (project == null || project.isDefault() || psiFile == null || !psiFile.isWritable()) {
+        PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
+        if (project == null || project.isDefault()
+                || !(psiElement instanceof PsiMethod)
+                || ((PsiMethod) psiElement).isConstructor()
+                || !new PluginProjectSetting(project).isSpringApp()) {
             e.getPresentation().setEnabledAndVisible(false);
             return;
         }
 
-        PsiMethod positionMethod = AppUtils.getPositionMethod(e);
-        e.getPresentation().setEnabledAndVisible(positionMethod != null && positionMethod.getReturnType() != null && new PluginProjectSetting(project).isSpringApp());
+        e.getPresentation().setText(InvokerBundle.getMessage("positionMethod.call.name"));
+        e.getPresentation().setEnabledAndVisible(true);
     }
 
     @Override
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getProject();
         Editor editor = e.getData(CommonDataKeys.EDITOR);
-        if (project == null || project.isDefault() || editor == null || !AppUtils.checkConfig(project)) {
+        PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
+        if (project == null || project.isDefault() || editor == null || !(psiElement instanceof PsiMethod) || !AppUtils.checkConfig(project)) {
             return;
         }
-        PsiMethod positionMethod = AppUtils.getPositionMethod(e);
-        if (positionMethod == null) {
-            NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.getMessage("positionMethod.null.message"), project);
-            return;
-        }
+        PsiMethod positionMethod = (PsiMethod) psiElement;
+//        if (positionMethod == null) {
+//            NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.getMessage("positionMethod.null.message"), project);
+//            return;
+//        }
         if (!positionMethod.hasModifierProperty(PsiModifier.PUBLIC)
                 || positionMethod.getParameterList().getParametersCount() > 0) {
             NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.message("positionMethod.signature.error.message", positionMethod.getName()),

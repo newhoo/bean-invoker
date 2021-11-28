@@ -4,14 +4,28 @@
     <vendor email="huzunrong@foxmail.com" url="https://github.com/huzunrong/bean-invoker">huzunrong</vendor>
 
     <description><![CDATA[
-    <ul>
-        <li>Invoke spring bean method conveniently</li>
-        <br/>
-        <li>快速调用Spring bean方法</li>
-    </ul>
+        Invoke spring bean method conveniently. Usage:
+        <ul>
+            <li>Enable bean invoker in `ToolsMenu`.</li>
+            <li>Need give a `public method with no parameter` in spring bean. On the method, you can invoke other methods as you want.</li>
+            <li>Shortcut：Right click on current method name, and find `Fast Invoke`. Default shortcut key is option x.</li>
+            <br/>
+        </ul>
+
+        快速调用Spring bean方法，使用：
+        <ul>
+            <li>在`ToolsMenu`菜单中启用调用</li>
+            <li>需指定**无参public方法**，支持自动生成。此方法中，可实现其他有参函数调用</li>
+            <li>入口：当前方法名称上右键，找到`快速调用`，默认快捷键 option x</li>
+        </ul>
     ]]></description>
 
     <change-notes><![CDATA[
+        1.0.4
+        <ul>
+            <li>fix bugs</li>
+        </ul>
+
         1.0.3
         <ul>
             <li>fix bugs</li>
@@ -64,8 +78,12 @@
 
     <actions>
         <!-- #e16531 -->
+        <action id="io.github.newhoo.invoker.setting.SettingAction"
+                class="io.github.newhoo.invoker.setting.SettingAction" text="Enable Bean Invoker">
+            <add-to-group group-id="ToolsMenu"/>
+        </action>
         <action id="io.github.newhoo.invoker.InvokeBeanAction"
-                class="io.github.newhoo.invoker.InvokeBeanAction" text="快速调用" icon="/img/run.png">
+                class="io.github.newhoo.invoker.InvokeBeanAction" text="Fast Invoke" icon="/img/run.png">
             <keyboard-shortcut first-keystroke="alt x" keymap="$default"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>

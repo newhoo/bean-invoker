@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
  */
 public class InvokerBundle {
 
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("messages.invoker", getLocale());
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("messages.invoker", getLocale());
 
     private static Locale getLocale() {
         String lang = Locale.getDefault().getLanguage();
