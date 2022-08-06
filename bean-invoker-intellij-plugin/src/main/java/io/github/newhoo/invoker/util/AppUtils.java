@@ -105,11 +105,15 @@ public final class AppUtils {
         }
 
         Editor editor = anActionEvent.getData(EDITOR);
+        if (editor == null) {
+            return null;
+        }
+        int offset = editor.getCaretModel().getOffset();
 
         PsiClassOwner psiClassOwner = (PsiClassOwner) psiFile;
         for (PsiClass psiClass : psiClassOwner.getClasses()) {
             for (PsiMethod psiMethod : psiClass.getMethods()) {
-                if (editor != null && psiMethod.getTextRange().containsOffset(editor.getCaretModel().getOffset())) {
+                if (psiMethod.getTextRange() != null && psiMethod.getTextRange().containsOffset(offset)) {
                     return psiMethod;
                 }
             }
@@ -122,6 +126,7 @@ public final class AppUtils {
      *
      * @param typeCanonicalText 参数类型全限定名称
      * @param project 当前project
+     *
      * @return 查找到的类
      *//*
     public static PsiClass findPsiClass(String typeCanonicalText, Project project) {
