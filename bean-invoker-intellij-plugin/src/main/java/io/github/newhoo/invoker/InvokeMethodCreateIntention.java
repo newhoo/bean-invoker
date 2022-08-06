@@ -4,8 +4,6 @@ import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.util.IncorrectOperationException;
@@ -14,8 +12,6 @@ import io.github.newhoo.invoker.util.AppUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nls.Capitalization;
 import org.jetbrains.annotations.NotNull;
-
-import static com.intellij.lang.jvm.JvmClassKind.CLASS;
 
 /**
  * PropertiesCreateAction
@@ -27,38 +23,20 @@ public class InvokeMethodCreateIntention extends PsiElementBaseIntentionAction i
 
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-        PsiClassOwner psiClassOwner = (PsiClassOwner) element.getContainingFile();
-        for (PsiClass psiClass : psiClassOwner.getClasses()) {
-            for (PsiMethod psiMethod : psiClass.getMethods()) {
-                if (editor != null && psiMethod.getReturnType() != null && psiMethod.getTextRange().containsOffset(editor.getCaretModel().getOffset())) {
-                    AppUtils.generateTest(project, psiMethod, editor);
-                }
-            }
+        PsiElement parent = element.getParent();
+        if (editor != null && parent instanceof PsiMethod) {
+            AppUtils.generateTest(project, (PsiMethod) parent, editor);
         }
     }
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-        if (!new PluginProjectSetting(project).isSpringApp()) {
-            return false;
-        }
-        if (element.getContainingFile().isWritable() && element.getContainingFile() instanceof PsiClassOwner) {
-            PsiClassOwner psiClassOwner = (PsiClassOwner) element.getContainingFile();
-
-            for (PsiClass psiClass : psiClassOwner.getClasses()) {
-                if (psiClass.getClassKind() == CLASS) {
-                    for (PsiMethod psiMethod : psiClass.getMethods()) {
-                        if (editor != null
-                                && psiMethod.getReturnType() != null
-                                && psiMethod.getTextRange().containsOffset(editor.getCaretModel().getOffset())
-                                && !psiMethod.getName().endsWith("TEST")) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        PsiElement parent = element.getParent();
+        return editor != null
+                && new PluginProjectSetting(project).isSpringApp()
+                && parent instanceof PsiMethod
+                && !((PsiMethod) parent).isConstructor()
+                && !((PsiMethod) parent).getName().endsWith("TEST");
     }
 
     @Nls(capitalization = Capitalization.Sentence)
@@ -71,6 +49,6 @@ public class InvokeMethodCreateIntention extends PsiElementBaseIntentionAction i
     @NotNull
     @Override
     public String getText() {
-        return "Generate calling method";
+        return "Generate invocation method";
     }
 }
