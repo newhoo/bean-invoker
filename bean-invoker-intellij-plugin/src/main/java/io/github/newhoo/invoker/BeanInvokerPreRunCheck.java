@@ -34,12 +34,11 @@ public class BeanInvokerPreRunCheck extends JavaProgramPatcher {
 
     @Override
     public void patchJavaParameters(Executor executor, RunProfile configuration, JavaParameters javaParameters) {
-        System.out.println("bean-invoker-run-configuration-class" + configuration.getClass().getName() + " :: " + configuration.getClass());
-        if (NOT_SUPPORTED_RUN_CONFIGURATION.contains(configuration.getClass().getName())) {
-            return;
-        }
-
         if (configuration instanceof RunConfiguration) {
+            System.out.println("bean-invoker-run-configuration-class" + configuration.getClass().getName() + " :: " + configuration.getClass());
+            if (NOT_SUPPORTED_RUN_CONFIGURATION.contains(configuration.getClass().getName())) {
+                return;
+            }
             RunConfiguration runConfiguration = (RunConfiguration) configuration;
             Project project = runConfiguration.getProject();
             PluginProjectSetting pluginProjectSetting = new PluginProjectSetting(project);
