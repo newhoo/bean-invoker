@@ -13,7 +13,11 @@ import io.github.newhoo.invoker.setting.PluginProjectSetting;
 import io.github.newhoo.invoker.util.AppUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Set;
+import java.util.stream.Stream;
+
 import static io.github.newhoo.invoker.common.Constant.APP_ID;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * BeanInvokerPreRunCheck
@@ -24,16 +28,16 @@ import static io.github.newhoo.invoker.common.Constant.APP_ID;
 public class BeanInvokerPreRunCheck extends JavaProgramPatcher {
 
     private static final Logger logger = Logger.getInstance(APP_ID);
-//    private static final Set<String> SUPPORTED_RUN_CONFIGURATION = Stream.of(
-//            "com.intellij.execution.application.ApplicationConfiguration",
-//            "com.intellij.spring.boot.run.SpringBootApplicationRunConfiguration"
-//    ).collect(toSet());
+    private static final Set<String> NOT_SUPPORTED_RUN_CONFIGURATION = Stream.of(
+            "org.jetbrains.idea.maven.execution.MavenRunConfiguration"
+    ).collect(toSet());
 
     @Override
     public void patchJavaParameters(Executor executor, RunProfile configuration, JavaParameters javaParameters) {
-//        if (!SUPPORTED_RUN_CONFIGURATION.contains(configuration.getClass().getName())) {
-//            return;
-//        }
+        System.out.println("bean-invoker-run-configuration-class" + configuration.getClass().getName() + " :: " + configuration.getClass());
+        if (NOT_SUPPORTED_RUN_CONFIGURATION.contains(configuration.getClass().getName())) {
+            return;
+        }
 
         if (configuration instanceof RunConfiguration) {
             RunConfiguration runConfiguration = (RunConfiguration) configuration;

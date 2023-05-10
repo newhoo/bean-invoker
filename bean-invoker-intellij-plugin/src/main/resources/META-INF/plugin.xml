@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>io.github.newhoo.bean-invoker</id>
     <name>Bean Invoker</name>
-    <vendor email="huzunrong@foxmail.com" url="https://github.com/huzunrong/bean-invoker">huzunrong</vendor>
+    <vendor email="huzunrong@foxmail.com" url="https://github.com/newhoo/bean-invoker">huzunrong</vendor>
 
     <description><![CDATA[
         Invoke spring bean method conveniently. Usage:
@@ -21,6 +21,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        1.0.5
+        <ul>
+            <li>fix bugs; filter maven run</li>
+        </ul>
+
         1.0.4
         <ul>
             <li>fix bugs</li>

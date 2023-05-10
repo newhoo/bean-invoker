@@ -5,8 +5,9 @@ import com.intellij.ide.plugins.PluginManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.application.ApplicationManager;
+//import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
@@ -168,7 +169,8 @@ public final class AppUtils {
         int lineStartOffset = document.getLineStartOffset(startLineNum);
         String containingFileType = positionMethod.getContainingFile().getFileType().getName();
 
-        ApplicationManager.getApplication().runWriteAction(() -> {
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+//        ApplicationManager.getApplication().runWriteAction(() -> {
             CommandProcessor.getInstance().executeCommand(project, () -> {
                 String generateKtMethod = null;
                 if ("JAVA".equals(containingFileType)) {

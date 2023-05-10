@@ -12,6 +12,8 @@ import io.github.newhoo.invoker.util.AppUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
 
 /**
  * 启动后判断
@@ -29,6 +31,9 @@ public class MyStartupActivity implements StartupActivity {
                     boolean springApp = AppUtils.isSpringApp(project);
                     setting.setIsSpringApp(springApp);
 
+                    if (StringUtils.isNotEmpty(setting.getAgentPath()) && !new File(setting.getAgentPath()).exists()) {
+                        setting.setAgentPath(null);
+                    }
                     if (springApp && StringUtils.isEmpty(setting.getAgentPath())) {
                         AppExecutorUtil.getAppExecutorService().execute(() -> {
                             AppUtils.getAgentPath("io.github.newhoo.bean-invoker", "bean-invoker-agent")
