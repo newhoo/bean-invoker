@@ -5,7 +5,6 @@ import com.intellij.ide.plugins.PluginManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-//import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
@@ -36,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.EDITOR;
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
@@ -151,15 +151,18 @@ public final class AppUtils {
     }*/
     public static Integer findAvailablePort(Project project) {
         PluginProjectSetting pluginProjectSetting = new PluginProjectSetting(project);
+        int port = pluginProjectSetting.getSettingInvokePort();
+        if (port != 0) {
+            return port;
+        }
 
+        int initialPort = DEFAULT_INVOKE_PORT + new Random().nextInt(1000);
         for (int i = 0; i < 100; i++) {
-            int availablePort = DEFAULT_INVOKE_PORT + i;
+            int availablePort = initialPort + i;
             if (!isPortUsing(availablePort)) {
-                pluginProjectSetting.setSpringInvokePort(availablePort);
                 return availablePort;
             }
         }
-        NotificationUtils.warnBalloon(InvokerBundle.getMessage("no.available.port"), "", project);
         return null;
     }
 

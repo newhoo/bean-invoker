@@ -9,8 +9,10 @@ import com.intellij.execution.runners.JavaProgramPatcher;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import io.github.newhoo.invoker.common.Constant;
+import io.github.newhoo.invoker.i18n.InvokerBundle;
 import io.github.newhoo.invoker.setting.PluginProjectSetting;
 import io.github.newhoo.invoker.util.AppUtils;
+import io.github.newhoo.invoker.util.NotificationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
@@ -55,7 +57,14 @@ public class BeanInvokerPreRunCheck extends JavaProgramPatcher {
                     }
                     vmParametersList.addParametersString("-javaagent:" + agentPath);
 
-                    vmParametersList.addNotEmptyProperty(Constant.PROPERTIES_KEY_INVOKE_PORT, String.valueOf(AppUtils.findAvailablePort(project)));
+                    // find port
+                    Integer availablePort = AppUtils.findAvailablePort(project);
+                    if (availablePort == null) {
+                        NotificationUtils.warnBalloon(InvokerBundle.getMessage("no.available.port"), "", project);
+                        return;
+                    }
+                    pluginProjectSetting.setSpringInvokePort(availablePort);
+                    vmParametersList.addNotEmptyProperty(Constant.PROPERTIES_KEY_INVOKE_PORT, String.valueOf(availablePort));
                 }
             }
         }

@@ -17,6 +17,7 @@ public class PluginProjectSetting {
     private static final String KEY_AGENT_PATH = "bean-invoker.agentPath";
     private static final String KEY_SPRING_INVOKE_ENABLE = "bean-invoker.enableQuickInvoke";
     private static final String KEY_INVOKE_PORT = "bean-invoker.invokePort";
+    private static final String KEY_SETTING_INVOKE_PORT = "bean-invoker.settingInvokePort";
 
     private final PropertiesComponent propertiesComponent;
 
@@ -54,6 +55,14 @@ public class PluginProjectSetting {
 
     public void setSpringInvokePort(int port) {
         propertiesComponent.setValue(KEY_INVOKE_PORT, port, DEFAULT_INVOKE_PORT);
+    }
+
+    public int getSettingInvokePort() {
+        return propertiesComponent.getInt(KEY_SETTING_INVOKE_PORT, 0);
+    }
+
+    public void setSettingInvokePort(int port) {
+        propertiesComponent.setValue(KEY_SETTING_INVOKE_PORT, port, 0);
     }
 
 }
