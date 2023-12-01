@@ -75,12 +75,12 @@ public class InvokeBeanAction extends AnAction {
             return;
         }
 
-        String qualifiedName = positionMethod.getContainingClass().getQualifiedName();
+        String className = JVMNameUtil.getClassVMName(positionMethod.getContainingClass());
         String methodName = positionMethod.getName();
         int invokePort = new PluginProjectSetting(project).getSpringInvokePort();
 
         // 发送请求
-        sendRequest(qualifiedName, methodName, invokePort, project);
+        sendRequest(className, methodName, invokePort, project);
     }
 
     private void sendRequest(String className, String methodName, int port, Project project) {
