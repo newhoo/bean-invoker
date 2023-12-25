@@ -23,6 +23,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        1.0.7
+        <ul>
+            <li>optimize: <a href="https://github.com/newhoo/bean-invoker/pull/7">support static class call</a></li>
+        </ul>
+
         1.0.6
         <ul>
             <li>fix bug;</li>
