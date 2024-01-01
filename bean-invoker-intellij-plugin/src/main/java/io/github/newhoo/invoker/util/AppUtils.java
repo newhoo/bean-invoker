@@ -1,9 +1,9 @@
 package io.github.newhoo.invoker.util;
 
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationListener;
+import com.intellij.notification.NotificationAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -14,8 +14,6 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassOwner;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -25,20 +23,13 @@ import io.github.newhoo.invoker.setting.PluginProjectSetting;
 import io.github.newhoo.invoker.setting.SettingConfigurable;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.event.HyperlinkEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
-import static com.intellij.openapi.actionSystem.CommonDataKeys.EDITOR;
-import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 import static io.github.newhoo.invoker.common.Constant.DEFAULT_INVOKE_PORT;
 
 /**
@@ -56,9 +47,9 @@ public final class AppUtils {
         PluginProjectSetting pluginProjectSetting = new PluginProjectSetting(project);
         if (!pluginProjectSetting.getEnableQuickInvoke()) {
             NotificationUtils.infoBalloon(InvokerBundle.getMessage("plugin.setting.complete.title"), InvokerBundle.getMessage("plugin.setting.complete.tip"),
-                    new NotificationListener.Adapter() {
+                    new NotificationAction(InvokerBundle.getMessage("plugin.setting.complete.tipBtn")) {
                         @Override
-                        protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent e) {
+                        public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
                             ShowSettingsUtil.getInstance().showSettingsDialog(project, SettingConfigurable.class);
                         }
                     }, project);
@@ -85,49 +76,50 @@ public final class AppUtils {
      */
     public static Optional<String> getAgentPath(String pluginId, String agentName) {
         PluginId pluginId0 = PluginId.getId(pluginId);
-        IdeaPluginDescriptor plugin = PluginManager.getPlugin(pluginId0);
+        IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(pluginId0);
         if (plugin != null) {
-//            Path pluginPath = plugin.getPluginPath();
-            File path = plugin.getPath();
-            return Arrays.stream(Objects.requireNonNull(path.listFiles()))
-                         .filter(File::isDirectory)
-                         .flatMap(file -> Arrays.stream(Objects.requireNonNull(file.listFiles(f -> f.getName().endsWith(".jar")))))
-                         .filter(file -> file.getName().contains(agentName))
-                         .map(File::getAbsolutePath)
-                         .findFirst();
+            Path pluginPath = plugin.getPluginPath();
+            if (pluginPath == null) {
+                return Optional.empty();
+            }
+            return Arrays.stream(Objects.requireNonNull(pluginPath.toFile().listFiles()))
+                    .filter(File::isDirectory)
+                    .flatMap(file -> Arrays.stream(Objects.requireNonNull(file.listFiles(f -> f.getName().endsWith(".jar")))))
+                    .filter(file -> file.getName().contains(agentName))
+                    .map(File::getAbsolutePath)
+                    .findFirst();
         }
         return Optional.empty();
     }
 
-    public static PsiMethod getPositionMethod(AnActionEvent anActionEvent) {
-        PsiFile psiFile = anActionEvent.getData(PSI_FILE);
-        if (!(psiFile instanceof PsiClassOwner)) {
-            return null;
-        }
-
-        Editor editor = anActionEvent.getData(EDITOR);
-        if (editor == null) {
-            return null;
-        }
-        int offset = editor.getCaretModel().getOffset();
-
-        PsiClassOwner psiClassOwner = (PsiClassOwner) psiFile;
-        for (PsiClass psiClass : psiClassOwner.getClasses()) {
-            for (PsiMethod psiMethod : psiClass.getMethods()) {
-                if (psiMethod.getTextRange() != null && psiMethod.getTextRange().containsOffset(offset)) {
-                    return psiMethod;
-                }
-            }
-        }
-        return null;
-    }
+//    public static PsiMethod getPositionMethod(AnActionEvent anActionEvent) {
+//        PsiFile psiFile = anActionEvent.getData(PSI_FILE);
+//        if (!(psiFile instanceof PsiClassOwner)) {
+//            return null;
+//        }
+//
+//        Editor editor = anActionEvent.getData(EDITOR);
+//        if (editor == null) {
+//            return null;
+//        }
+//        int offset = editor.getCaretModel().getOffset();
+//
+//        PsiClassOwner psiClassOwner = (PsiClassOwner) psiFile;
+//        for (PsiClass psiClass : psiClassOwner.getClasses()) {
+//            for (PsiMethod psiMethod : psiClass.getMethods()) {
+//                if (psiMethod.getTextRange() != null && psiMethod.getTextRange().containsOffset(offset)) {
+//                    return psiMethod;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * 查找类
      *
      * @param typeCanonicalText 参数类型全限定名称
-     * @param project 当前project
-     *
+     * @param project           当前project
      * @return 查找到的类
      *//*
     public static PsiClass findPsiClass(String typeCanonicalText, Project project) {
@@ -196,13 +188,13 @@ public final class AppUtils {
     private static String getGenerateKtMethod(PsiMethod positionMethod) {
         StringBuilder sb = new StringBuilder();
         sb.append("    // TODO clean: ").append(LocalDateTime.now()).append("\n")
-          .append("    fun $name$() {\n");
+                .append("    fun $name$() {\n");
 
         List<String> parameterNameList = new ArrayList<>(positionMethod.getParameterList().getParametersCount());
         for (PsiParameter parameter : positionMethod.getParameterList().getParameters()) {
             parameterNameList.add(parameter.getName());
             sb.append("        var ").append(parameter.getName()).append(" = ")
-              .append(parameter.getType().getPresentableText()).append("();\n");
+                    .append(parameter.getType().getPresentableText()).append("();\n");
         }
 
         sb.append("        ").append(positionMethod.getName()).append("(").append(String.join(", ", parameterNameList)).append(");\n");
@@ -216,13 +208,13 @@ public final class AppUtils {
     private static String getGenerateJavaMethod(PsiMethod positionMethod) {
         StringBuilder sb = new StringBuilder();
         sb.append("    // TODO clean: ").append(LocalDateTime.now()).append("\n")
-          .append("    public void $name$() {\n");
+                .append("    public void $name$() {\n");
 
         List<String> parameterNameList = new ArrayList<>(positionMethod.getParameterList().getParametersCount());
         for (PsiParameter parameter : positionMethod.getParameterList().getParameters()) {
             parameterNameList.add(parameter.getName());
             sb.append("        ").append(parameter.getType().getPresentableText()).append(" ").append(parameter.getName()).append(" = new ")
-              .append(parameter.getType().getPresentableText()).append("();\n");
+                    .append(parameter.getType().getPresentableText()).append("();\n");
         }
 
         sb.append("        ").append(positionMethod.getName()).append("(").append(String.join(", ", parameterNameList)).append(");\n");

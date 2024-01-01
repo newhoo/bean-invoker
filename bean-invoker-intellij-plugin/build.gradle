@@ -29,9 +29,11 @@ dependencies {
 }
 
 intellij {
-    version.set('2018.1.7')
+//    version.set('2018.1.7')
+    version.set('2020.3')
     updateSinceUntilBuild.set(false)
     downloadSources.set(true)
+    plugins.set(['java'])
     sandboxDir.set("${rootProject.rootDir}/idea-sandbox")
 }
 

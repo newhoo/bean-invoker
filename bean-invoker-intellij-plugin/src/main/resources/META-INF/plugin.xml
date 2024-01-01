@@ -26,6 +26,7 @@
         1.0.7
         <ul>
             <li>optimize: <a href="https://github.com/newhoo/bean-invoker/pull/7">support static class call</a></li>
+            <li>fix compatibility problems</li>
         </ul>
 
         1.0.6
@@ -80,18 +81,19 @@
     -->
     <depends>com.intellij.modules.java</depends>
 
-    <idea-version since-build="181.0"/>
+    <idea-version since-build="203.5981.155"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <postStartupActivity implementation="io.github.newhoo.invoker.MyStartupActivity"/>
         <projectConfigurable instance="io.github.newhoo.invoker.setting.SettingConfigurable"/>
 
-        <intentionAction>
-            <className>io.github.newhoo.invoker.InvokeMethodCreateIntention</className>
-            <category>Java:Other</category>
-        </intentionAction>
+<!--        <intentionAction>-->
+<!--            <className>io.github.newhoo.invoker.InvokeMethodCreateIntention</className>-->
+<!--            <category>Java:Other</category>-->
+<!--        </intentionAction>-->
         <java.programPatcher implementation="io.github.newhoo.invoker.BeanInvokerPreRunCheck"/>
+        <notificationGroup id="bean-invoker-notification" displayType="BALLOON"/>
     </extensions>
 
     <actions>

@@ -1,6 +1,6 @@
 package io.github.newhoo.invoker.i18n;
 
-import com.intellij.CommonBundle;
+import com.intellij.AbstractBundle;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -29,6 +29,6 @@ public class InvokerBundle {
     }
 
     public static String message(String key, Object... params) {
-        return CommonBundle.message(resourceBundle, key, params).trim();
+        return AbstractBundle.message(resourceBundle, key, params).trim();
     }
 }

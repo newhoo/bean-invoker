@@ -2,7 +2,7 @@ package io.github.newhoo.invoker;
 
 import com.intellij.debugger.engine.JVMNameUtil;
 import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationListener;
+import com.intellij.notification.NotificationAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -18,7 +18,6 @@ import io.github.newhoo.invoker.util.AppUtils;
 import io.github.newhoo.invoker.util.NotificationUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.event.HyperlinkEvent;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -66,9 +65,9 @@ public class InvokeBeanAction extends AnAction {
         if (!positionMethod.hasModifierProperty(PsiModifier.PUBLIC)
                 || positionMethod.getParameterList().getParametersCount() > 0) {
             NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.message("positionMethod.signature.error.message", positionMethod.getName()),
-                    new NotificationListener.Adapter() {
+                    new NotificationAction(InvokerBundle.message("positionMethod.signature.error.messageBtn")) {
                         @Override
-                        protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent e) {
+                        public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
                             AppUtils.generateTest(project, positionMethod, editor);
                             notification.expire();
                         }
@@ -95,7 +94,7 @@ public class InvokeBeanAction extends AnAction {
                 bw.write(content + "\r\n");
                 bw.flush();
             } catch (IOException e) {
-                NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.message("positionMethod.call.error.message", String.valueOf(port)), project);
+                NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.message("positionMethod.call.error.message", String.valueOf(port)), null, project);
             }
         }).start();
     }
