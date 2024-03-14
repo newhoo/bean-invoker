@@ -1,0 +1,4 @@
+{
+    "spring-bean-invoker.commands.GenarateBeanInvokerVmargs.title":"Generate Bean Invoker vmArgs",
+    "spring-bean-invoker.commands.InvokeBean.title":"Invoke Bean Method"
+}

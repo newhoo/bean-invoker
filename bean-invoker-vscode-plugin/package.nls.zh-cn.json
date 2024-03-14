@@ -1,0 +1,4 @@
+{
+    "spring-bean-invoker.commands.GenarateBeanInvokerVmargs.title":"生成 Spring Bean 调用参数",
+    "spring-bean-invoker.commands.InvokeBean.title":"调用 Bean 方法"
+}
