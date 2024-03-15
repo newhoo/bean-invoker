@@ -2,7 +2,7 @@
 
 All notable changes to the "spring-bean-invoker" extension will be documented in this file.
 
-## 1.0.0 - 2024-03-15
+## 1.0.0
 
 ### Added
 

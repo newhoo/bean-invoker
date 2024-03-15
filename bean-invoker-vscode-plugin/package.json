@@ -17,6 +17,7 @@
   "keywords": [
     "java",
     "spring",
+    "springboot",
     "bean",
     "invoker"
   ],
@@ -27,7 +28,6 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
