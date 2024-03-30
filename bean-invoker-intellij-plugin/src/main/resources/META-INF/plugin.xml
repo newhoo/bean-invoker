@@ -1,28 +1,36 @@
 <idea-plugin>
     <id>io.github.newhoo.bean-invoker</id>
-    <name>Bean Invoker</name>
+    <name>Spring Bean Invoker</name>
     <vendor email="huzunrong@foxmail.com" url="https://github.com/newhoo/bean-invoker">huzunrong</vendor>
 
     <description><![CDATA[
         Invoke spring bean method conveniently. Usage:
-        <ul>
-            <li>Enable bean invoker in `ToolsMenu`.</li>
-            <li>Need give a `public method with no parameter` in spring bean. On the method, you can invoke other methods as you want.</li>
-            <li>Shortcut: right click on current method name, and find `Fast Invoke`. Default shortcut key is option/alt x.</li>
+        <ol>
+            <li>Enable bean invoker in Settings.</li>
+            <li>Choose a <b>public method with no parameter</b> in spring beans. On the method, you can invoke other methods as you want !!</li>
+            <li>Entrypoint: right click on current method name, and find <kbd>Fast Invoke</kbd>. Default shortcut key is <kbd>option/alt x</kbd>.</li>
             <li>Set port: not required usually. If you get trouble with windows dynamic port, try <a href="https://learn.microsoft.com/en-US/troubleshoot/windows-server/networking/default-dynamic-port-range-tcpip-chang">default-dynamic-port-range-tcpip</a>.</li>
-            <br/>
-        </ul>
+            <li><b>The most important tip: It works much better with Jrebel plugin.</b></li>
+        </ol>
+        <br/>
 
         快速调用Spring bean方法，使用：
-        <ul>
-            <li>在`ToolsMenu`菜单中启用调用</li>
-            <li>需指定**无参public方法**，支持自动生成。此方法中，可实现其他有参函数调用</li>
-            <li>入口：当前方法名称上右键，找到`快速调用`，默认快捷键 option/alt x</li>
-            <<li>指定端口：通常不需要指定，如果遇到windows动态端口占用，可参考 <a href="https://learn.microsoft.com/zh-CN/troubleshoot/windows-server/networking/default-dynamic-port-range-tcpip-chang">TCP/IP默认动态端口范围</a></li>
-        </ul>
+        <ol>
+            <li>在设置中启用调用</li>
+            <li>源码中选定<b>无参public方法</b>，按提示支持自动生成。此方法中，可实现其他有参函数调用!!</li>
+            <li>入口：当前方法名称上右键，找到<kbd>快速调用</kbd>，默认快捷键 <kbd>option/alt x</kbd></li>
+            <li>指定端口：通常不需要指定，如果遇到windows动态端口占用，可参考 <a href="https://learn.microsoft.com/zh-CN/troubleshoot/windows-server/networking/default-dynamic-port-range-tcpip-chang">TCP/IP默认动态端口范围</a></li>
+            <li><b>额外说明：搭配 Jrebel 插件，可在运行过程中实现动态加载，使用效果极佳.</b></li>
+        </ol>
     ]]></description>
 
     <change-notes><![CDATA[
+        1.0.8
+        <ul>
+            <li>fix bug;</li>
+            <li>support <a href="https://github.com/newhoo/bean-invoker">vscode plugin</a>;</li>
+        </ul>
+
         1.0.7
         <ul>
             <li>optimize: <a href="https://github.com/newhoo/bean-invoker/pull/7">support static class call</a></li>
@@ -86,7 +94,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <postStartupActivity implementation="io.github.newhoo.invoker.MyStartupActivity"/>
-        <projectConfigurable instance="io.github.newhoo.invoker.setting.SettingConfigurable"/>
+        <projectConfigurable instance="io.github.newhoo.invoker.setting.SettingConfigurable" displayName="Bean Invoker"/>
 
 <!--        <intentionAction>-->
 <!--            <className>io.github.newhoo.invoker.InvokeMethodCreateIntention</className>-->
