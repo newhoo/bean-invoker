@@ -3,6 +3,7 @@ package io.github.newhoo.invoker;
 import com.intellij.debugger.engine.JVMNameUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationAction;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -32,6 +33,11 @@ import static io.github.newhoo.invoker.common.Constant.SERVICE_METHOD_SPLIT;
  * @since 1.0.1
  */
 public class InvokeBeanAction extends AnAction {
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 
     @Override
     public void update(AnActionEvent e) {

@@ -25,6 +25,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        1.0.9
+        <ul>
+            <li>fix exception in 2024.1;</li>
+        </ul>
+
         1.0.8
         <ul>
             <li>fix bug;</li>
@@ -89,7 +94,8 @@
     -->
     <depends>com.intellij.modules.java</depends>
 
-    <idea-version since-build="203.5981.155"/>
+<!--    <idea-version since-build="203.5981.155"/>-->
+    <idea-version since-build="231.0"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->

@@ -5,12 +5,15 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupActivity;
+import com.intellij.openapi.startup.ProjectActivity;
 import com.intellij.util.concurrency.AppExecutorUtil;
 import io.github.newhoo.invoker.setting.PluginProjectSetting;
 import io.github.newhoo.invoker.util.AppUtils;
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -18,10 +21,11 @@ import java.io.File;
 /**
  * 启动后判断
  */
-public class MyStartupActivity implements StartupActivity {
+public class MyStartupActivity implements ProjectActivity {
 
+    @Nullable
     @Override
-    public void runActivity(@NotNull Project project) {
+    public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
         ProgressManager.getInstance().run(new Task.Backgroundable(project, "Bean Invoker Check", false) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
@@ -44,5 +48,6 @@ public class MyStartupActivity implements StartupActivity {
 
             }
         });
+        return null;
     }
 }
