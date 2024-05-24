@@ -19,10 +19,12 @@ public class SettingConfigurable implements Configurable {
 
     private final PluginProjectSetting projectSetting;
     private final SettingForm settingForm;
+    private final Project project;
 
     public SettingConfigurable(Project project) {
+        this.project = project;
         this.projectSetting = new PluginProjectSetting(project);
-        this.settingForm = new SettingForm();
+        this.settingForm = new SettingForm(project, projectSetting);
     }
 
     @Nls(capitalization = Capitalization.Title)
@@ -50,7 +52,7 @@ public class SettingConfigurable implements Configurable {
         try {
             int port = Integer.parseInt(settingForm.portTextField.getText());
             if (port < 0 || port > 65535) {
-                throw new IllegalArgumentException("Wrong port " + port);
+                throw new ConfigurationException("Wrong port " + port);
             }
             projectSetting.setSettingInvokePort(port);
         } catch (Exception e) {
@@ -61,7 +63,6 @@ public class SettingConfigurable implements Configurable {
 
     @Override
     public void reset() {
-        settingForm.invokeEnableCheckBox.setSelected(projectSetting.getEnableQuickInvoke());
-        settingForm.portTextField.setText(String.valueOf(projectSetting.getSettingInvokePort()));
+        settingForm.reset(project);
     }
 }

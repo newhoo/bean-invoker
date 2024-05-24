@@ -25,7 +25,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        1.0.9
+        1.0.9-1.0.10
         <ul>
             <li>fix exception in 2024.1;</li>
         </ul>
@@ -117,7 +117,7 @@
             <add-to-group group-id="ToolsMenu"/>
         </action>
         <action id="io.github.newhoo.invoker.InvokeBeanAction"
-                class="io.github.newhoo.invoker.InvokeBeanAction" text="Fast Invoke" icon="/img/run.png">
+                class="io.github.newhoo.invoker.InvokeBeanAction" text="Fast Invoke" icon="com.intellij.icons.AllIcons.Actions.Lightning">
             <keyboard-shortcut first-keystroke="alt x" keymap="$default"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>

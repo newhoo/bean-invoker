@@ -46,7 +46,7 @@ public class InvokeBeanAction extends AnAction {
         if (project == null || project.isDefault()
                 || !(psiElement instanceof PsiMethod)
                 || ((PsiMethod) psiElement).isConstructor()
-                || !new PluginProjectSetting(project).isSpringApp()) {
+                || !new PluginProjectSetting(project).showContextInvokeButton()) {
             e.getPresentation().setEnabledAndVisible(false);
             return;
         }

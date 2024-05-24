@@ -1,8 +1,10 @@
 package io.github.newhoo.invoker.setting;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author huzunrong
@@ -10,6 +12,11 @@ import com.intellij.openapi.project.Project;
  * @since 1.0.0
  */
 public class SettingAction extends ToggleAction {
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 
     @Override
     public boolean isSelected(AnActionEvent e) {

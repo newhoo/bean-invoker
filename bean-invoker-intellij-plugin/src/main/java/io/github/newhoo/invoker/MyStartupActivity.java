@@ -31,20 +31,22 @@ public class MyStartupActivity implements ProjectActivity {
             public void run(@NotNull ProgressIndicator indicator) {
                 PluginProjectSetting setting = new PluginProjectSetting(project);
                 DumbService.getInstance(project)
-                        .runReadActionInSmartMode(()->{
-                            boolean springApp = AppUtils.isSpringApp(project);
-                            setting.setIsSpringApp(springApp);
+                           .runReadActionInSmartMode(() -> {
+                               if (!setting.isSpringApp()) {
+                                   boolean springApp = AppUtils.isSpringApp(project);
+                                   setting.setIsSpringApp(springApp);
+                                   if (springApp) {
+                                       setting.setEnableQuickInvoke(true);
+                                   }
+                               }
 
-                            if (StringUtils.isNotEmpty(setting.getAgentPath()) && !new File(setting.getAgentPath()).exists()) {
-                                setting.setAgentPath(null);
-                            }
-                            if (springApp && StringUtils.isEmpty(setting.getAgentPath())) {
-                                AppExecutorUtil.getAppExecutorService().execute(() -> {
-                                    AppUtils.getAgentPath("io.github.newhoo.bean-invoker", "bean-invoker-agent")
-                                            .ifPresent(setting::setAgentPath);
-                                });
-                            }
-                        });
+                               if (StringUtils.isEmpty(setting.getAgentPath()) || !new File(setting.getAgentPath()).exists()) {
+                                   AppExecutorUtil.getAppExecutorService().execute(() -> {
+                                       AppUtils.getAgentPath("io.github.newhoo.bean-invoker", "bean-invoker-agent")
+                                               .ifPresent(setting::setAgentPath);
+                                   });
+                               }
+                           });
 //                ApplicationManager.getApplication().runReadAction(() -> {
 //                    boolean springApp = AppUtils.isSpringApp(project);
 //                    setting.setIsSpringApp(springApp);
