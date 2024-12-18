@@ -48,7 +48,7 @@ public final class ApplicationContextServer {
         System.out.println("Bean invoker initialized with port: " + port);
         if (!working) {
             working = true;
-            new Thread(() -> {
+            Thread thread = new Thread(() -> {
                 ServerSocket serverSocket = null;
                 try {
                     serverSocket = new ServerSocket(port);
@@ -98,7 +98,9 @@ public final class ApplicationContextServer {
                         }
                     }
                 }
-            }).start();
+            });
+            thread.setDaemon(true);
+            thread.start();
         }
     }
 
