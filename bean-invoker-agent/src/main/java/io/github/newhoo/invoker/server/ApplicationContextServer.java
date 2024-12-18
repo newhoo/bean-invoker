@@ -56,7 +56,7 @@ public final class ApplicationContextServer {
                         Socket socket = serverSocket.accept();
                         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         String content = br.readLine();
-
+                        
                         if (content == null || content.length() == 0) {
                             socket.close();
                             continue;
@@ -66,12 +66,12 @@ public final class ApplicationContextServer {
                             socket.close();
                             continue;
                         }
-
+                        
                         try {
                             String[] split = content.split(SERVICE_METHOD_SPLIT);
                             String className = split[0];
                             String methodName = split[1];
-
+                            
                             handleRequest(className, methodName);
                         } catch (InvocationTargetException e) {
                             System.err.println("Invoke method error: " + e.toString());
@@ -83,7 +83,7 @@ public final class ApplicationContextServer {
                             System.err.println("unknown exception: " + e.toString());
                             e.printStackTrace();
                         }
-
+                        
                         socket.close();
                     }
                 } catch (Exception e) {
