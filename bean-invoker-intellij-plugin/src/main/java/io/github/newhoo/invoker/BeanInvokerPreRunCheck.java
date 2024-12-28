@@ -45,7 +45,7 @@ public class BeanInvokerPreRunCheck extends JavaProgramPatcher {
             Project project = runConfiguration.getProject();
             PluginProjectSetting pluginProjectSetting = new PluginProjectSetting(project);
 
-            logger.info(String.format("检查[%s]插件启用状态", APP_ID));
+            logger.info(String.format("[bean-invoker] 检查[%s]插件启用状态", APP_ID));
 
             if (pluginProjectSetting.getEnableQuickInvoke() && pluginProjectSetting.isSpringApp()) {
                 ParametersList vmParametersList = javaParameters.getVMParametersList();

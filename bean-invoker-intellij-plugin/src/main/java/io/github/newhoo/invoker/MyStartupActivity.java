@@ -34,16 +34,27 @@ public class MyStartupActivity implements ProjectActivity {
                            .runReadActionInSmartMode(() -> {
                                if (!setting.isSpringApp()) {
                                    boolean springApp = AppUtils.isSpringApp(project);
+                                   System.out.println("[bean-invoker] check is spring app: " + springApp);
                                    setting.setIsSpringApp(springApp);
                                    if (springApp) {
                                        setting.setEnableQuickInvoke(true);
                                    }
                                }
 
-                               if (StringUtils.isEmpty(setting.getAgentPath()) || !new File(setting.getAgentPath()).exists()) {
+                               if (StringUtils.isNotEmpty(setting.getAgentPath())) {
+                                   if (!StringUtils.contains(setting.getAgentPath(), "bean-invoker-agent-1.0.3-with-dependencies.jar")) {
+                                       setting.setAgentPath(null);
+                                   } else if (!new File(setting.getAgentPath()).exists()) {
+                                       setting.setAgentPath(null);
+                                   }
+                               }
+                               if (StringUtils.isEmpty(setting.getAgentPath())) {
                                    AppExecutorUtil.getAppExecutorService().execute(() -> {
                                        AppUtils.getAgentPath("io.github.newhoo.bean-invoker", "bean-invoker-agent")
-                                               .ifPresent(setting::setAgentPath);
+                                               .ifPresent(s -> {
+                                                   System.out.println("[bean-invoker] set agent path: " + s);
+                                                   setting.setAgentPath(s);
+                                               });
                                    });
                                }
                            });

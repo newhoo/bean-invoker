@@ -107,15 +107,15 @@ public final class ApplicationContextServer {
     /**
      * 处理调用
      *
-     * @param className com.seewo.iot.platform.web.controller.BrokerController
-     * @param methodName sayHello
+     * @param qualifiedClassName com.example.web.controller.UserController
+     * @param methodName         sayHello
      */
-    private static void handleRequest(String className, String methodName) throws ClassNotFoundException, NoSuchMethodException,
+    private static void handleRequest(String qualifiedClassName, String methodName) throws ClassNotFoundException, NoSuchMethodException,
             InvocationTargetException, IllegalAccessException {
-        System.out.println(String.format("###################################### %s#%s ######################################", className,
+        System.out.println(String.format("###################################### %s#%s ######################################", qualifiedClassName,
                 methodName));
 
-        Class<?> targetClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+        Class<?> targetClass = Thread.currentThread().getContextClassLoader().loadClass(qualifiedClassName);
         Method targetMethod = targetClass.getDeclaredMethod(methodName);
 
         if (!Modifier.isPublic(targetMethod.getModifiers())) {

@@ -4,7 +4,7 @@
     <vendor email="huzunrong@foxmail.com" url="https://github.com/newhoo/bean-invoker">huzunrong</vendor>
 
     <description><![CDATA[
-        Invoke spring bean method conveniently. Usage:
+        Invoke spring bean method conveniently. <a href="https://github.com/newhoo/bean-invoker">Github</a>. Usage:
         <ol>
             <li>Enable bean invoker in Settings.</li>
             <li>Choose a <b>public method with no parameter</b> in spring beans. On the method, you can invoke other methods as you want !!</li>
@@ -25,65 +25,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        1.0.9-1.0.10
+        1.0.11
         <ul>
-            <li>fix exception in 2024.1;</li>
-        </ul>
-
-        1.0.8
-        <ul>
-            <li>fix bug;</li>
-            <li>support <a href="https://github.com/newhoo/bean-invoker">vscode plugin</a>;</li>
-        </ul>
-
-        1.0.7
-        <ul>
-            <li>optimize: <a href="https://github.com/newhoo/bean-invoker/pull/7">support static class call</a></li>
-            <li>fix compatibility problems</li>
-        </ul>
-
-        1.0.6
-        <ul>
-            <li>fix bug;</li>
-            <li>support setting port.</li>
-        </ul>
-
-        1.0.5
-        <ul>
-            <li>fix bugs; filter maven run</li>
-        </ul>
-
-        1.0.4
-        <ul>
-            <li>fix bugs</li>
-        </ul>
-
-        1.0.3
-        <ul>
-            <li>fix bugs</li>
-        </ul>
-
-        1.0.2
-        <ul>
-            <li>supported spring app with kotlin</li>
-            <li>supported i18n</li>
-            <br/>
-            <li>支持用kotlin编写的Spring应用</li>
-            <li>支持国际化</li>
-        </ul>
-
-        1.0.1
-        <ul>
-            <li>remove javassist, use ASM from jdk internal</li>
-            <li>supported tomcat app</li>
-            <br/>
-            <li>去除javassist，改用jdk内置的ASM</li>
-            <li>支持tomcat应用</li>
-        </ul>
-
-        1.0.0
-        <ul>
-            <li>new plugin, just use it.</li>
+            <li>fix issue: <a href="https://github.com/newhoo/bean-invoker/issues/13">#13</a></li>
         </ul>
       ]]>
     </change-notes>
