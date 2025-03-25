@@ -1,6 +1,8 @@
 package io.github.newhoo.invoker;
 
 import com.intellij.debugger.engine.JVMNameUtil;
+import com.intellij.lang.Language;
+import com.intellij.lang.java.JavaLanguage;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationAction;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
@@ -18,11 +20,15 @@ import io.github.newhoo.invoker.setting.PluginProjectSetting;
 import io.github.newhoo.invoker.util.AppUtils;
 import io.github.newhoo.invoker.util.NotificationUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.kotlin.asJava.LightClassUtilsKt;
+import org.jetbrains.kotlin.idea.KotlinLanguage;
+import org.jetbrains.kotlin.psi.KtNamedFunction;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.List;
 
 import static io.github.newhoo.invoker.common.Constant.SERVICE_METHOD_SPLIT;
 
@@ -43,9 +49,8 @@ public class InvokeBeanAction extends AnAction {
     public void update(AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
-        if (project == null || project.isDefault()
-                || !(psiElement instanceof PsiMethod)
-                || ((PsiMethod) psiElement).isConstructor()
+        if (psiElement == null || project == null || project.isDefault()
+                || !showAction(psiElement)
                 || !new PluginProjectSetting(project).showContextInvokeButton()) {
             e.getPresentation().setEnabledAndVisible(false);
             return;
@@ -60,22 +65,20 @@ public class InvokeBeanAction extends AnAction {
         Project project = e.getProject();
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         PsiElement psiElement = e.getData(CommonDataKeys.PSI_ELEMENT);
-        if (project == null || project.isDefault() || editor == null || !(psiElement instanceof PsiMethod) || !AppUtils.checkConfig(project)) {
+        if (project == null || project.isDefault() || editor == null || psiElement == null || !AppUtils.checkConfig(project)) {
             return;
         }
-        PsiMethod positionMethod = (PsiMethod) psiElement;
-//        if (positionMethod == null) {
-//            NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.getMessage("positionMethod.null.message"), project);
-//            return;
-//        }
-        if (!positionMethod.hasModifierProperty(PsiModifier.PUBLIC)
-                || positionMethod.getParameterList().getParametersCount() > 0) {
+        PsiMethod positionMethod = getPsiMethod(psiElement);
+        if (positionMethod == null) {
+            return;
+        }
+        if (!positionMethod.hasModifierProperty(PsiModifier.PUBLIC) || positionMethod.getParameterList().getParametersCount() > 0) {
             NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.message("positionMethod.signature.error.message", positionMethod.getName()),
                     new NotificationAction(InvokerBundle.message("positionMethod.signature.error.messageBtn")) {
                         @Override
                         public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
-                            AppUtils.generateTest(project, positionMethod, editor);
                             notification.expire();
+                            AppUtils.generateTest(project, positionMethod, editor);
                         }
                     }, project);
             return;
@@ -103,5 +106,30 @@ public class InvokeBeanAction extends AnAction {
                 NotificationUtils.errorBalloon(InvokerBundle.getMessage("positionMethod.call.error.title"), InvokerBundle.message("positionMethod.call.error.message", String.valueOf(port)), null, project);
             }
         }).start();
+    }
+
+    private boolean showAction(PsiElement psiElement) {
+        Language language = psiElement.getLanguage();
+        if (language instanceof JavaLanguage) {
+            return psiElement instanceof PsiMethod && !((PsiMethod) psiElement).isConstructor();
+        } else if (language instanceof KotlinLanguage) {
+            return psiElement instanceof KtNamedFunction;
+        }
+        return false;
+    }
+
+    private PsiMethod getPsiMethod(PsiElement psiElement) {
+        Language language = psiElement.getLanguage();
+        if (language instanceof JavaLanguage) {
+            return (PsiMethod) psiElement;
+        } else if (language instanceof KotlinLanguage) {
+            if (psiElement instanceof KtNamedFunction) {
+                List<PsiMethod> lightMethods = LightClassUtilsKt.toLightMethods(psiElement);
+                if (!lightMethods.isEmpty()) {
+                    return lightMethods.get(0);
+                }
+            }
+        }
+        return null;
     }
 }

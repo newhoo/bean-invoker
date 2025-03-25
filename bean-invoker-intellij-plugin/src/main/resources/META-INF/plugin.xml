@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>io.github.newhoo.bean-invoker</id>
     <name>Spring Bean Invoker</name>
-    <vendor email="huzunrong@foxmail.com" url="https://github.com/newhoo/bean-invoker">huzunrong</vendor>
+    <vendor email="dev2n@qq.com" url="https://github.com/newhoo/bean-invoker">newhoo</vendor>
 
     <description><![CDATA[
         Invoke spring bean method conveniently. <a href="https://github.com/newhoo/bean-invoker">Github</a>. Usage:
@@ -25,9 +25,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        1.0.11
+        1.0.12
         <ul>
-            <li>fix issue: <a href="https://github.com/newhoo/bean-invoker/issues/13">#13</a></li>
+            <li>support kotlin</li>
         </ul>
       ]]>
     </change-notes>
@@ -37,6 +37,7 @@
     <!-- uncomment to enable plugin in all products
     -->
     <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
 <!--    <idea-version since-build="203.5981.155"/>-->
     <idea-version since-build="231.0"/>
