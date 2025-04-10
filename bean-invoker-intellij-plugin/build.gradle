@@ -12,7 +12,7 @@ plugins {
 }
 
 group 'io.github.newhoo.invoker'
-version '1.0.12'
+version '1.0.13'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8

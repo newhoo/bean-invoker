@@ -25,9 +25,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        1.0.12
+        1.0.13
         <ul>
-            <li>support kotlin</li>
+            <li>support kotlin k2 mode</li>
         </ul>
       ]]>
     </change-notes>
@@ -41,6 +41,10 @@
 
 <!--    <idea-version since-build="203.5981.155"/>-->
     <idea-version since-build="231.0"/>
+
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <supportsKotlinPluginMode supportsK1="true" supportsK2="true" />
+    </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
