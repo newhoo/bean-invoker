@@ -1,23 +1,17 @@
 package io.github.newhoo.invoker.setting;
 
 import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
+import io.github.newhoo.invoker.JavaToolHelper;
 import io.github.newhoo.invoker.i18n.InvokerBundle;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -33,8 +27,6 @@ public class SettingForm {
     public JPanel mainPanel;
 
     public JCheckBox invokeEnableCheckBox;
-    private JLabel portLabel;
-    public JTextField portTextField;
 
     private JPanel previewPanel;
     private JLabel previewLabel;
@@ -46,13 +38,10 @@ public class SettingForm {
         this.projectSetting = projectSetting;
 
         invokeEnableCheckBox.setText(InvokerBundle.getMessage("plugin.enable"));
-        portLabel.setText(InvokerBundle.getMessage("plugin.setting.listenPortLabel"));
-        portTextField.setToolTipText(InvokerBundle.getMessage("plugin.setting.listenPortToolTip"));
 
         previewLabel.setText(InvokerBundle.getMessage("plugin.setting.previewLabel"));
-        addFocusListener(portTextField);
         invokeEnableCheckBox.addItemListener(e -> setPreview());
-        if (StringUtils.isEmpty(projectSetting.getAgentPath())) {
+        if (JavaToolHelper.getBeanInvokerAgentPath().isEmpty()) {
             return;
         }
         previewLabel.addMouseListener(new MouseAdapter() {
@@ -88,34 +77,20 @@ public class SettingForm {
 
                 DataContext dataContext = DataManager.getInstance().getDataContext(previewLabel);
                 final ListPopup popup = JBPopupFactory.getInstance()
-                                                      .createActionGroupPopup(
-                                                              null,
-                                                              generateActionGroup,
-                                                              dataContext,
-                                                              JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
-                                                              true);
+                        .createActionGroupPopup(
+                                null,
+                                generateActionGroup,
+                                dataContext,
+                                JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
+                                true);
                 popup.showInBestPositionFor(dataContext);
-            }
-        });
-    }
-
-    private void addFocusListener(JTextField jTextField) {
-        jTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                setPreview();
-            }
-
-            @Override
-            public void focusGained(FocusEvent e) {
             }
         });
     }
 
     public void reset(Project project) {
         invokeEnableCheckBox.setSelected(projectSetting.getEnableQuickInvoke());
-        portTextField.setText(String.valueOf(projectSetting.getSettingInvokePort()));
-        
+
         setPreview();
     }
 
@@ -128,13 +103,13 @@ public class SettingForm {
         }
 
         StringBuilder sb = new StringBuilder();
-        String agentPath = projectSetting.getAgentPath();
-        if (StringUtils.isEmpty(agentPath)) {
+        String agentPath = JavaToolHelper.getBeanInvokerAgentPath();
+        if (agentPath.isEmpty()) {
             sb.append("Agent not found! Try check your spring project and reopen it.");
         } else {
             sb.append("\"").append("-javaagent:").append(agentPath).append("\"\n");
 
-            sb.append("\"").append("-D").append(PROPERTIES_KEY_INVOKE_PORT).append("=").append(StringUtils.defaultIfEmpty(portTextField.getText(), "0")).append("\"");
+            sb.append("\"").append("-D").append(PROPERTIES_KEY_INVOKE_PORT).append("=").append("0").append("\"");
         }
         previewTextArea.setText(sb.toString());
     }

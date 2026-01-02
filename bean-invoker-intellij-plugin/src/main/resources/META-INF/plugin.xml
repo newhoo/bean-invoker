@@ -25,9 +25,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        1.0.13
+        1.1.0
         <ul>
-            <li>support kotlin k2 mode</li>
+            <li>Refactored implementation, supporting calls to multiple running applications.</li>
+            <li>This plugin has been migrated to the RestfulBox plugin, which is recommended for use.</li>
+            <br/>
+            <li>重构实现，支持调用同时运行中的多个应用</li>
+            <li>该插件已迁移到 RestfulBox 插件，推荐使用</li>
         </ul>
       ]]>
     </change-notes>
@@ -40,7 +44,7 @@
     <depends>org.jetbrains.kotlin</depends>
 
 <!--    <idea-version since-build="203.5981.155"/>-->
-    <idea-version since-build="231.0"/>
+    <idea-version since-build="241.0"/>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
         <supportsKotlinPluginMode supportsK1="true" supportsK2="true" />
@@ -48,27 +52,21 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <postStartupActivity implementation="io.github.newhoo.invoker.MyStartupActivity"/>
-        <projectConfigurable instance="io.github.newhoo.invoker.setting.SettingConfigurable" displayName="Bean Invoker"/>
+        <projectConfigurable instance="io.github.newhoo.invoker.setting.SettingConfigurable" displayName="Spring Bean Invoker"/>
 
-<!--        <intentionAction>-->
-<!--            <className>io.github.newhoo.invoker.InvokeMethodCreateIntention</className>-->
-<!--            <category>Java:Other</category>-->
-<!--        </intentionAction>-->
         <java.programPatcher implementation="io.github.newhoo.invoker.BeanInvokerPreRunCheck"/>
         <notificationGroup id="bean-invoker-notification" displayType="BALLOON"/>
     </extensions>
 
     <actions>
         <!-- #e16531 -->
-        <action id="io.github.newhoo.invoker.setting.SettingAction"
-                class="io.github.newhoo.invoker.setting.SettingAction" text="Enable Bean Invoker">
-            <add-to-group group-id="ToolsMenu"/>
-        </action>
         <action id="io.github.newhoo.invoker.InvokeBeanAction"
-                class="io.github.newhoo.invoker.InvokeBeanAction" text="Fast Invoke" icon="com.intellij.icons.AllIcons.Actions.Lightning">
+                class="io.github.newhoo.invoker.InvokeBeanAction" text="Invoke Bean" icon="com.intellij.icons.AllIcons.Actions.Lightning">
             <keyboard-shortcut first-keystroke="alt x" keymap="$default"/>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
+        <group id="io.github.newhoo.invoker.InvokeBeanDynamicActionGroup" class="io.github.newhoo.invoker.InvokeBeanDynamicActionGroup" popup="false" text="Invoke Bean">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="io.github.newhoo.invoker.InvokeBeanAction"/>
+        </group>
     </actions>
 </idea-plugin>

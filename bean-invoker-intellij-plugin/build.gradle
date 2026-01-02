@@ -12,10 +12,10 @@ plugins {
 }
 
 group 'io.github.newhoo.invoker'
-version '1.0.13'
+version '1.1.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -38,6 +38,14 @@ intellij {
 }
 
 tasks {
+    clean {
+        println("PATH" + System.getenv("PATH"))
+        println("E0: " + System.getenv("E0"))
+        println("E1: " + System.getenv("E1"))
+        println("E2: " + System.getenv("E2"))
+        println("E3: " + System.getProperty("P1"))
+        println("E4: " + System.getProperty("P2"))
+    }
     verifyPluginConfiguration {
         enabled = false
     }

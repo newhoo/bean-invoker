@@ -30,7 +30,7 @@ public class SettingConfigurable implements Configurable {
     @Nls(capitalization = Capitalization.Title)
     @Override
     public String getDisplayName() {
-        return "Bean Invoker";
+        return "Spring Bean Invoker";
     }
 
     @Nullable
@@ -41,23 +41,11 @@ public class SettingConfigurable implements Configurable {
 
     @Override
     public boolean isModified() {
-        int port = projectSetting.getSettingInvokePort();
-        String value = settingForm.portTextField.getText();
-        return projectSetting.getEnableQuickInvoke() != settingForm.invokeEnableCheckBox.isSelected()
-                || !String.valueOf(port).equals(value);
+        return !String.valueOf(projectSetting.getEnableQuickInvoke()).equals(String.valueOf(settingForm.invokeEnableCheckBox.isSelected()));
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        try {
-            int port = Integer.parseInt(settingForm.portTextField.getText());
-            if (port < 0 || port > 65535) {
-                throw new ConfigurationException("Wrong port " + port);
-            }
-            projectSetting.setSettingInvokePort(port);
-        } catch (Exception e) {
-            throw new ConfigurationException(e.toString());
-        }
         projectSetting.setEnableQuickInvoke(settingForm.invokeEnableCheckBox.isSelected());
     }
 
