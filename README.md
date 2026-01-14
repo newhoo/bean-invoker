@@ -2,6 +2,8 @@
 
 Invoke spring bean method in java project conveniently.
 
+_**State: The idea plugin has been migrated to the [RestfulBox](https://plugins.jetbrains.com/plugin/14723-restfulbox) plugin.**_
+
 ## Use in Idea
 
 - Introduction: [bean-invoker-intellij-plugin/README.md](./bean-invoker-intellij-plugin/README.md)
